@@ -1,0 +1,58 @@
+#include <iostream>
+#include <stdexcept>
+
+class CustomDynamicArray {
+private:
+    int* elements;
+    int size;
+    int capacity;
+
+public:
+    CustomDynamicArray() {
+        capacity = 2;
+        size = 0;
+        elements = new int[capacity];
+    }
+
+    ~CustomDynamicArray() {
+        delete[] elements;
+    }
+
+    void append(int value) {
+        if (size == capacity) {
+            capacity *= 2;
+            int* newElements = new int[capacity];
+            for (int i = 0; i < size; ++i) {
+                newElements[i] = elements[i];
+            }
+            delete[] elements;
+            elements = newElements;
+        }
+        elements[size++] = value;
+    }
+
+    int& atIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return elements[index];
+    }
+
+    int getSize() const {
+        return size;
+    }
+};
+
+int main() {
+    CustomDynamicArray myArray;
+    myArray.append(100);
+    myArray.append(200);
+    myArray.append(300);
+
+    for (int i = 0; i < myArray.getSize(); ++i) {
+        std::cout << myArray.atIndex(i) << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
